@@ -1,11 +1,14 @@
 import { useState, useCallback } from 'react';
 import { CalendarEvent } from '../types/calendar';
 import { MeetingSummary, MeetingInsights } from '../types/ai';
-import { perplexityAI } from '../lib/ai/perplexityService';
+import { AiService } from '../lib/ai/AiService'; // Updated import - Groq only
 
 export const useAIService = () => {
   const [summaries, setSummaries] = useState<Map<string, MeetingSummary>>(new Map());
   const [insights, setInsights] = useState<MeetingInsights | null>(null);
+
+  // Create AiService instance (Groq-based)
+  const aiService = new AiService();
 
   const generateSummary = useCallback(async (meeting: CalendarEvent) => {
     // Set loading state
@@ -18,7 +21,8 @@ export const useAIService = () => {
     }));
 
     try {
-      const summary = await perplexityAI.generateMeetingSummary(meeting);
+      // Updated to use Groq-based AiService
+      const summary = await aiService.generateSummary(meeting);
       
       setSummaries(prev => new Map(prev).set(meeting.id, {
         meetingId: meeting.id,
@@ -36,7 +40,7 @@ export const useAIService = () => {
         error: error instanceof Error ? error.message : 'Failed to generate summary'
       }));
     }
-  }, []);
+  }, [aiService]);
 
   const generateInsights = useCallback(async (meetings: CalendarEvent[]) => {
     setInsights({
@@ -47,7 +51,8 @@ export const useAIService = () => {
     });
 
     try {
-      const insightsText = await perplexityAI.generateMeetingInsights(meetings);
+      // Updated to use Groq-based AiService
+      const insightsText = await aiService.generateInsights(meetings);
       
       setInsights({
         insights: insightsText,
@@ -63,7 +68,7 @@ export const useAIService = () => {
         error: error instanceof Error ? error.message : 'Failed to generate insights'
       });
     }
-  }, []);
+  }, [aiService]);
 
   const getSummary = useCallback((meetingId: string) => {
     return summaries.get(meetingId);

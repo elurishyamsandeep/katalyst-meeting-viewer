@@ -78,7 +78,7 @@ export default function TestAiPage() {
       console.log('Testing meeting summary generation...');
       console.log('Input meeting:', mockMeeting);
       
-      const summary = await aiService.generateMeetingSummary(mockMeeting);
+      const summary = await aiService.generateSummary(mockMeeting);
       
       console.log('Generated summary:', summary);
       setSummaryResult(summary);
@@ -100,7 +100,8 @@ export default function TestAiPage() {
       console.log('Testing meeting insights generation...');
       console.log('Input meetings:', mockMeetings);
       
-      const insights = await aiService.generateMeetingInsights(mockMeetings);
+      // FIXED: Changed from analyzeMeetings to generateInsights
+      const insights = await aiService.generateInsights(mockMeetings);
       
       console.log('Generated insights:', insights);
       setInsightsResult(insights);
@@ -114,10 +115,11 @@ export default function TestAiPage() {
   };
 
   const testApiConnection = async () => {
-    console.log('Testing API connection...');
-    console.log('API Key present:', !!process.env.NEXT_PUBLIC_PERPLEXITY_API_KEY);
-    console.log('API Key first 10 chars:', process.env.NEXT_PUBLIC_PERPLEXITY_API_KEY?.substring(0, 10));
+  console.log('Testing Groq API connection...');
+  console.log('API Key present:', !!process.env.NEXT_PUBLIC_GROQ_API_KEY);
+  console.log('API Key first 10 chars:', process.env.NEXT_PUBLIC_GROQ_API_KEY?.substring(0, 10));
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
