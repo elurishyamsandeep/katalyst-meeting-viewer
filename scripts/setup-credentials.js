@@ -3,30 +3,26 @@ const path = require('path');
 
 console.log('🚀 Setting up OAuth credentials...');
 
-const existingFile = path.join(process.cwd(), 'gcp-oauth.keys.json');
+const credentialsPath = path.join(process.cwd(), 'gcp-oauth.keys.json');
 
-if (fs.existsSync(existingFile)) {
-  // Use existing file (for local development)
-  process.env.GOOGLE_OAUTH_CREDENTIALS = existingFile;
+if (fs.existsSync(credentialsPath)) {
+  // Use existing file (works for both local and Render)
+  process.env.GOOGLE_OAUTH_CREDENTIALS = credentialsPath;
   console.log('✅ Using existing gcp-oauth.keys.json file');
-  console.log('📍 File location:', existingFile);
-} else if (process.env.GOOGLE_OAUTH_CREDENTIALS_JSON) {
-  // Create from environment variable (for Render deployment)
+  console.log('📍 File location:', credentialsPath);
+  
+  // Verify the file is readable
   try {
-    const credentials = JSON.parse(process.env.GOOGLE_OAUTH_CREDENTIALS_JSON);
-    fs.writeFileSync(existingFile, JSON.stringify(credentials, null, 2));
-    process.env.GOOGLE_OAUTH_CREDENTIALS = existingFile;
-    console.log('✅ OAuth credentials file created from environment');
-    console.log('📍 File location:', existingFile);
+    const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+    if (credentials.installed) {
+      console.log('✅ Desktop app credentials detected (correct for MCP)');
+    }
   } catch (error) {
-    console.error('❌ Error creating credentials file:', error.message);
-    console.error('💡 Check your GOOGLE_OAUTH_CREDENTIALS_JSON format');
+    console.error('❌ Error reading credentials file:', error.message);
     process.exit(1);
   }
 } else {
-  console.error('❌ No OAuth credentials found');
-  console.log('💡 Please ensure gcp-oauth.keys.json exists in the project root or set GOOGLE_OAUTH_CREDENTIALS_JSON');
-  console.log('💡 For local development: place gcp-oauth.keys.json in project root');
-  console.log('💡 For Render deployment: set GOOGLE_OAUTH_CREDENTIALS_JSON environment variable');
+  console.error('❌ gcp-oauth.keys.json file not found');
+  console.log('💡 Please ensure gcp-oauth.keys.json exists in the project root');
   process.exit(1);
 }
