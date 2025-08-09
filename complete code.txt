@@ -1,0 +1,59 @@
+Project Tree (excluding .next and node_modules):
+
+katalyst-meeting-viewer/
+├── .env
+├── .gitignore
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.js
+├── package.json
+├── postcss.config.js
+├── postcss.config.mjs
+├── README.md
+├── tailwind.config.js
+├── tsconfig.json
+├── public/
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+└── src/
+    ├── app/
+    │   ├── globals.css
+    │   ├── layout.tsx
+    │   ├── page.tsx
+    │   ├── providers.tsx
+    │   ├── test-ai.tsx
+    │   └── test-calendar-ai/
+    │       └── page.tsx
+    ├── components/
+    │   ├── GoogleLogin.tsx
+    │   ├── auth/
+    │   │   └── SignInPage.tsx
+    │   ├── dashboard/
+    │   │   ├── Dashboard.tsx
+    │   │   ├── MeetingCard.tsx
+    │   │   └── MeetingsList.tsx
+    │   ├── layout/
+    │   │   └── Header.tsx
+    │   └── ui/
+    │       └── LoadingSpinner.tsx
+    ├── contexts/
+    │   └── AuthContext.tsx
+    ├── hooks/
+    │   ├── useAIService.ts
+    │   └── useCalendarData.ts
+    ├── lib/
+    │   ├── ai/
+    │   │   └── AiService.ts
+    │   ├── google/
+    │   │   ├── auth.ts
+    │   │   └── calendar.ts
+    │   └── utils/
+    │       └── dateFormatters.ts
+    └── types/
+        ├── ai.ts
+        ├── auth.ts
+        ├── calendar.ts
+        └── meeting.ts

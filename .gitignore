@@ -1,79 +1,45 @@
-﻿# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
+﻿# Dependencies
+node_modules/
 /.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+.pnp.js
 
-# testing
+# Testing
 /coverage
 
-# next.js
+# Next.js
 /.next/
 /out/
 
-# production
+# Production
 /build
 
-# misc
+# Misc
 .DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
 *.tsbuildinfo
 next-env.d.ts
 
-# MCP and Google OAuth sensitive files
-gcp-oauth.keys.json
-tokens.json
-/.config/
-~/.config/google-calendar-mcp/
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# IDE and editor files
+# Local env files
+.env
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# OAuth credentials (never commit these)
+gcp-oauth.keys.json
+creds
+
+# IDEs
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# OS generated files
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
+# OS
 Thumbs.db
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-
-# Logs
-*.log
-logs/
-
-# Cache directories
-.npm
-.eslintcache
-.parcel-cache

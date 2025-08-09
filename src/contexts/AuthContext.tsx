@@ -2,12 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types/auth';
+import { GoogleCalendarMCP } from '../lib/mcp/googleCalendarMCP';
 
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   logout: () => void;
   isLoading: boolean;
+  mcpService: GoogleCalendarMCP | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,26 +17,28 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [mcpService, setMcpService] = useState<GoogleCalendarMCP | null>(null);
 
-  // Load user from localStorage on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
         const storedUser = localStorage.getItem('user_info');
-        const storedToken = localStorage.getItem('google_access_token');
         
-        if (storedUser && storedToken) {
+        if (storedUser) {
           const parsedUser = JSON.parse(storedUser);
-          setUser({
-            ...parsedUser,
-            accessToken: storedToken
+          setUser(parsedUser);
+          
+          // Initialize MCP service
+          const service = new GoogleCalendarMCP();
+          service.initialize().then((success) => {
+            if (success) {
+              setMcpService(service);
+            }
           });
         }
       } catch (error) {
         console.error('Error loading stored user:', error);
-        // Clear corrupted data
         localStorage.removeItem('user_info');
-        localStorage.removeItem('google_access_token');
       } finally {
         setIsLoading(false);
       }
@@ -43,24 +47,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const handleSetUser = (newUser: User | null) => {
+    setUser(newUser);
+    
+    if (newUser && typeof window !== 'undefined') {
+      localStorage.setItem('user_info', JSON.stringify(newUser));
+      
+      // Initialize MCP service
+      const service = new GoogleCalendarMCP();
+      service.initialize().then((success) => {
+        if (success) {
+          setMcpService(service);
+        }
+      });
+    } else {
+      setMcpService(null);
+    }
+  };
+
   const logout = () => {
     setUser(null);
+    setMcpService(null);
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('google_access_token');
       localStorage.removeItem('user_info');
     }
   };
 
-  const handleSetUser = (newUser: User | null) => {
-    setUser(newUser);
-    if (newUser && typeof window !== 'undefined') {
-      localStorage.setItem('google_access_token', newUser.accessToken);
-      localStorage.setItem('user_info', JSON.stringify(newUser));
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ user, setUser: handleSetUser, logout, isLoading }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      setUser: handleSetUser, 
+      logout, 
+      isLoading,
+      mcpService 
+    }}>
       {children}
     </AuthContext.Provider>
   );
